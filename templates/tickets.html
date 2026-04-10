@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<main class="dashboard" style="padding-top: 2rem;">
+    <div class="card hover-glow" style="text-align: center; padding: 4rem 1rem;">
+        {% if qr_code %}
+            <h2 style="color: var(--accent-blue); margin-bottom: 5px;">Your VIP Pass</h2>
+            <p class="card-desc" style="margin-bottom: 25px;">Scan at the turnstiles for express entry.</p>
+            <div style="background: var(--bg-dark); padding: 15px; display: inline-block; border-radius: 12px; border: 2px solid var(--accent-blue);">
+                <img src="data:image/png;base64,{{ qr_code }}" alt="Entry QR Code" style="width: 200px; height: 200px; border-radius: 4px;">
+            </div>
+            <p style="margin-top: 15px; font-weight: 800; color: var(--accent-green);">Access Granted</p>
+        {% else %}
+            <i class="fa-solid fa-lock" style="font-size: 4rem; color: var(--accent-red); margin-bottom: 1rem;"></i>
+            <h2>Authentication Required</h2>
+            <p class="card-desc">You must be logged in to access your digital tickets!</p>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}

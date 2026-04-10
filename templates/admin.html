@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VenueFlow | Admin Panel</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .admin-form label { display: block; margin-top: 10px; font-size: 0.8rem; color: var(--text-muted); }
+        .admin-form input { width: 100%; padding: 8px; margin-top: 4px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); color: white; border-radius: 8px; }
+        .success-box { background: rgba(16, 185, 129, 0.2); border-left: 4px solid var(--accent-green); padding: 10px; border-radius: 8px; margin-top: 15px; display: none; }
+    </style>
+</head>
+<body>
+    <div class="app-container" style="max-height: 100vh; overflow-y: auto;">
+        <header class="navbar" style="border-bottom-color: var(--accent-red);">
+            <div class="logo" style="color: var(--accent-red);">
+                <i class="fa-solid fa-shield-halved"></i> Admin Control Room
+            </div>
+            <button class="btn-sm" onclick="logout()" style="background: var(--accent-red);">Logout</button>
+        </header>
+
+        <main class="dashboard" style="padding-bottom: 2rem;">
+            <div class="card">
+                <h3>Select Sport to Edit</h3>
+                <div class="sport-switcher" style="max-width: 100%; margin-top: 10px; overflow-x: auto;">
+                    <button class="active" onclick="loadSportForm('football')">Football</button>
+                    <button onclick="loadSportForm('cricket')">Cricket</button>
+                    <button onclick="loadSportForm('basketball')">Basketball</button>
+                    <button onclick="loadSportForm('tennis')">Tennis</button>
+                </div>
+            </div>
+
+            <div class="card" id="score-editor" style="opacity: 0.7;">
+                <h3><i class="fa-solid fa-lock"></i> Live Match (Auto-Synced Mode)</h3>
+                <p style="font-size: 0.8rem; color: var(--accent-green); margin-bottom: 10px;">Scores and match times are currently being pulled automatically from External APIs.</p>
+                <label>Match Status Label</label>
+                <input type="text" id="status-val" disabled>
+                
+                <div style="display: flex; gap: 10px;">
+                    <div style="flex: 1;">
+                        <label>Home Team Initials</label>
+                        <input type="text" id="home-val" disabled>
+                    </div>
+                    <div style="flex: 1;">
+                        <label>Away Team Initials</label>
+                        <input type="text" id="away-val" disabled>
+                    </div>
+                </div>
+
+                <label>Main Score</label>
+                <input type="text" id="score-val" disabled>
+
+                <label>Time/Overs/Points</label>
+                <input type="text" id="time-val" disabled>
+            </div>
+
+            <div class="card hover-glow admin-form">
+                <h3><i class="fa-solid fa-stopwatch"></i> Global Wait Times</h3>
+                <label>Restroom Level 1</label>
+                <input type="text" id="wt-restroom">
+                
+                <label>Main Merch Store</label>
+                <input type="text" id="wt-merch">
+                
+                <label>Pizza Stand B</label>
+                <input type="text" id="wt-pizza">
+            </div>
+
+            <button class="action-btn w-100" style="background: linear-gradient(135deg, #ef4444, #991b1b);" onclick="deployChanges()">
+                <i class="fa-solid fa-satellite-dish"></i> Deploy Live Changes
+            </button>
+            <div id="success-msg" class="success-box">Updates deployed to attendees!</div>
+        </main>
+    </div>
+
+    <script>
+        let currentSport = 'football';
+        let serverState = null;
+
+        async function init() {
+            // verify auth
+            const authRes = await fetch('/api/me');
+            const auth = await authRes.json();
+            if(!auth.logged_in || auth.role !== 'admin') {
+                window.location.href = '/'; return;
+            }
+
+            // fetch live data
+            const res = await fetch('/api/venue_data');
+            const data = await res.json();
+            serverState = data.data;
+            
+            // populate Wait Times
+            document.getElementById('wt-restroom').value = serverState.wait_times.restroom;
+            document.getElementById('wt-merch').value = serverState.wait_times.merch;
+            document.getElementById('wt-pizza').value = serverState.wait_times.pizza;
+
+            loadSportForm('football');
+        }
+
+        function loadSportForm(sportName) {
+            currentSport = sportName;
+            
+            // Update UI buttons
+            const btns = document.querySelectorAll('.sport-switcher button');
+            btns.forEach(b => {
+                if(b.textContent.toLowerCase() === sportName) b.classList.add('active');
+                else b.classList.remove('active');
+            });
+
+            // Populate form
+            const sportState = serverState[sportName];
+            document.getElementById('status-val').value = sportState.status;
+            document.getElementById('home-val').value = sportState.home;
+            document.getElementById('away-val').value = sportState.away;
+            document.getElementById('score-val').value = sportState.score;
+            document.getElementById('time-val').value = sportState.time;
+        }
+
+        async function deployChanges() {
+            // update local state cache with form data
+            serverState[currentSport] = {
+                status: document.getElementById('status-val').value,
+                home: document.getElementById('home-val').value,
+                away: document.getElementById('away-val').value,
+                score: document.getElementById('score-val').value,
+                time: document.getElementById('time-val').value
+            };
+
+            serverState.wait_times = {
+                restroom: document.getElementById('wt-restroom').value,
+                merch: document.getElementById('wt-merch').value,
+                pizza: document.getElementById('wt-pizza').value
+            };
+
+            // Post to backend
+            const res = await fetch('/api/admin/update_data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(serverState)
+            });
+            const result = await res.json();
+            if(result.success) {
+                const msgBox = document.getElementById('success-msg');
+                msgBox.style.display = 'block';
+                setTimeout(() => msgBox.style.display = 'none', 3000);
+            } else {
+                alert("Error deploying: " + result.message);
+            }
+        }
+
+        async function logout() {
+            await fetch('/api/logout', { method: 'POST' });
+            window.location.href = '/';
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

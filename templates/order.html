@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<main class="dashboard" style="padding-top: 2rem;">
+    <!-- Order Card -->
+    <div class="card order-card hover-glow">
+        <div class="card-header">
+            <h3><i class="fa-solid fa-burger"></i> Express Concessions</h3>
+        </div>
+        <div class="order-preview" style="gap: 1rem;">
+            <div class="food-item">
+                <i class="fa-solid fa-hotdog"></i>
+                <span>Classic Hotdog</span>
+                <button class="add-btn" data-item="Classic Hotdog">+</button>
+            </div>
+            <div class="food-item">
+                <i class="fa-solid fa-beer-mug-empty"></i>
+                <span>Draft Beer</span>
+                <button class="add-btn" data-item="Draft Beer">+</button>
+            </div>
+        </div>
+        <button id="checkout-btn" class="action-btn w-100 mt-2" style="padding: 1.5rem; font-size: 1.2rem;">Complete Order</button>
+    </div>
+</main>
+{% endblock %}

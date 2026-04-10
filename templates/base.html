@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VenueFlow | Sports Hub</title>
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="auth-overlay" class="auth-overlay">
+        <div class="auth-box glass-panel">
+            <h2><i class="fa-solid fa-bolt"></i> VenueFlow</h2>
+            <p>Please Login to access the event.</p>
+            <div class="auth-tabs">
+                <button class="auth-tab active" type="button" onclick="setAuthMode('login')">Login</button>
+                <button class="auth-tab" type="button" onclick="setAuthMode('register')">Register</button>
+            </div>
+            <form id="auth-form" class="admin-form">
+                <input type="text" id="auth-user" placeholder="Username" required>
+                <input type="password" id="auth-pass" placeholder="Password" required>
+                <button type="submit" class="action-btn w-100" id="auth-submit" style="margin-top: 15px;">Login</button>
+            </form>
+            <p class="demo-cred" style="margin-top:15px; font-size:0.75rem; color: #94a3b8;">Demo Admin: admin / admin</p>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- Top Navigation -->
+        <header class="navbar">
+            <div class="logo">
+                <i class="fa-solid fa-bolt"></i> VenueFlow
+            </div>
+            <div class="user-profile">
+                <img src="https://i.pravatar.cc/100?img=11" alt="Profile" onclick="logout()" style="cursor: pointer;">
+                <span class="seat-badge">Logout</span>
+            </div>
+        </header>
+
+        {% block content %}{% endblock %}
+
+        <!-- Interactive Bottom Nav Redirects -->
+        <nav class="bottom-nav">
+            <button class="nav-item" onclick="window.location.href='/'"><i class="fa-solid fa-house"></i><span>Home</span></button>
+            <button class="nav-item" onclick="window.location.href='/map'"><i class="fa-solid fa-map"></i><span>Map</span></button>
+            <button class="nav-item cart-nav" onclick="window.location.href='/order'"><i class="fa-solid fa-bag-shopping"></i><span class="badge">0</span><span>Order</span></button>
+            <button class="nav-item" onclick="window.location.href='/tickets'"><i class="fa-solid fa-ticket"></i><span>Tickets</span></button>
+        </nav>
+    </div>
+    
+    <script src="/app.js"></script>
+</body>
+</html>

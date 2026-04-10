@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<main class="dashboard" style="padding-top: 2rem;">
+    <!-- Map Only -->
+    <div class="card map-card hover-glow">
+        <div class="card-header">
+            <h3><i class="fa-solid fa-map-location-dot"></i> Interactive Venue Map</h3>
+            <button class="btn-sm">Expand</button>
+        </div>
+        <div class="map-preview" style="height: 300px; background-size: 40px 40px;">
+            <div class="pin current-loc" style="width:20px; height:20px;"></div>
+            <div class="path-line" style="height:4px; transform: rotate(-5deg); width: 80%;"></div>
+            <div class="pin destination" style="width:20px; height:20px;">Seat</div>
+        </div>
+        <p class="card-desc" style="font-size:1.1rem; padding: 1rem;">Navigate crowds and find shortest routes to your seat or exits.</p>
+    </div>
+</main>
+{% endblock %}

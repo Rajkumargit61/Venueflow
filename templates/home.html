@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="sport-switcher" style="padding: 10px; margin: 10px auto; display: flex; justify-content:center; max-width: 100%;">
+    <button class="active" data-sport="football"><i class="fa-solid fa-futbol"></i> Football</button>
+    <button data-sport="cricket"><i class="fa-solid fa-baseball-bat-ball"></i> Cricket</button>
+    <button data-sport="basketball"><i class="fa-solid fa-basketball"></i> Basketball</button>
+    <button data-sport="tennis"><i class="fa-solid fa-table-tennis-paddle-ball"></i> Tennis</button>
+</div>
+
+<!-- Live Match Header -->
+<section class="live-header">
+    <div class="glass-panel match-card">
+        <div class="match-status pulse"><span class="dot"></span> LIVE</div>
+        <div class="score-board">
+            <div class="team">
+                <div class="team-logo home-team">M</div>
+                <h2>MNC</h2>
+            </div>
+            <div class="score">
+                <h1>2 - 1</h1>
+                <p>75:12</p>
+            </div>
+            <div class="team">
+                <div class="team-logo away-team">U</div>
+                <h2>MUN</h2>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Dashboard Grid -->
+<main class="dashboard">
+    <!-- Row 3: Wait Times -->
+    <div class="card wait-card hover-glow">
+        <div class="card-header">
+            <h3><i class="fa-solid fa-stopwatch"></i> Live Wait Times</h3>
+        </div>
+        <div class="wait-list">
+            <div class="wait-item safe">
+                <span><i class="fa-solid fa-restroom"></i> Restroom (Level 1)</span>
+                <span class="time" id="display-wt-restroom">1 Min</span>
+            </div>
+            <div class="wait-item warning">
+                <span><i class="fa-solid fa-shirt"></i> Main Merch Store</span>
+                <span class="time" id="display-wt-merch">8 Min</span>
+            </div>
+            <div class="wait-item danger">
+                <span><i class="fa-solid fa-pizza-slice"></i> Pizza Stand B</span>
+                <span class="time" id="display-wt-pizza">15 Min</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Row 4: Parking -->
+    <div class="card parking-card hover-glow">
+        <div class="card-header">
+            <h3><i class="fa-solid fa-car"></i> Smart Parking</h3>
+        </div>
+        <div class="parking-info">
+            <div class="parked-at">
+                <p>You parked in:</p>
+                <h2>Zone F, Spot 42</h2>
+            </div>
+            <button class="btn-outline">Guide me to car</button>
+        </div>
+    </div>
+</main>
+{% endblock %}
